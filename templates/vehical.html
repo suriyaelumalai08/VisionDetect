@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classfication Vehical</title>
+
+
+    <link rel="stylesheet" href="{{url_for('static',filename='vehical.css')}}">
+</head>
+<body>
+
+    <nav class="nav_bar">
+        <a  id="homeid" href="{{ url_for('home') }}">Home</a>
+        <a id="demoid" href="{{ url_for('vehical') }}">Vehical</a>
+        <a id="demoid" href="{{ url_for('face') }}">Face Recognition</a>
+        <a id="demoid" href="{{ url_for('animal') }}">Animal</a>
+        <a id="demoid" href="{{ url_for('object_detection') }}">Object Detection</a>
+    </nav>
+
+
+
+         <div class="form_clf">
+
+            <form action="/vehical" method="post" enctype="multipart/form-data">
+
+            <div class="image_clf">
+                
+                <input type="file" id="input_id" name="image" accept="image/*" required>
+
+                <button type="submit" id="btn_id">upload</button>
+
+                <img id="img_id" src="{{ uploaded_image or '' }}" alt="Not selected">
+
+                {% if prediction %}
+                    <h2 id="pred_head">Prediction: {{ prediction }}</h2>
+                    <p id="pred_pag">Confidence: {{ confidence }}%</p>
+                {% endif %}
+
+            </div>
+
+            </form>
+
+        </div>
+
+        
+
+
+        <div class="contant">
+            <h1 id="headtopic">Vehicle Image Classification Using Deep Learning</h1>
+
+            <div class="p_tag">
+
+                <p>Vehicle Image Classification is a Computer Vision task in Deep Learning where an AI model automatically identifies and classifies different types of vehicles from an image.</p>
+
+                <p>This project uses Deep Learning models, especially Convolutional Neural Networks (CNNs), to process and understand vehicle images with high accuracy.</p>
+
+            </div>
+
+
+        </div>
+
+
+        
+
+        <div class="base">
+
+            <div class="lists" title="1">
+                <h2>Airplane</h2>
+            </div>
+
+            <div class="lists" title="2">
+                <h2>Ambulance</h2>
+            </div>
+
+            <div class="lists" title="3">
+                <h2>Bicycle</h2>
+            </div>
+
+            <div class="lists" title="4">
+                <h2>Bike</h2>
+            </div>
+
+            <div class="lists" title="5">
+                <h2>Boat</h2>
+            </div>
+
+        </div>
+
+
+
+        <div class="base2">
+
+            <div class="lists" title="6">
+                <h2>Bus</h2>
+            </div>
+
+            <div class="lists" title="7">
+                <h2>Car</h2>
+            </div>
+
+            <div class="lists" title="8">
+                <h2>Tractor</h2>
+            </div>
+
+            <div class="lists" title="9">
+                <h2>Truck</h2>
+            </div>
+
+            <div class="lists" title="10">
+                <h2>Scooter</h2>
+            </div>
+
+        </div>
+
+
+
+<script>
+
+    const image_input = document.getElementById('input_id');
+
+    const image_show = document.getElementById('img_id');
+
+    const button = document.getElementById('btn_id');
+
+
+    image_input.addEventListener('change',function(){
+
+        const file = image_input.files[0];
+
+        if (file){
+
+            const image_url = URL.createObjectURL(file);
+
+            console.log(image_url)
+
+            image_show.src = image_url
+
+            image_show.style.display = 'block'
+
+        }
+
+        else{
+            alert('Please select an image file first!');
+        }
+
+    });
+
+
+</script>
+
+</body>
+
+
+</html>
+
+
+

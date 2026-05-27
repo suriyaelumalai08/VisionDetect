@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='animal.css') }}">
+</head>
+<body>
+    <nav class="nav_bar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('vehical') }}">Vehical</a>
+        <a href="{{ url_for('face') }}">Face Recognition</a>
+        <a href="{{ url_for('animal') }}">Animal</a>
+        <a href="{{ url_for('object_detection') }}">Object Detection</a>
+    </nav>
+
+    <main class="animal_page">
+        <section class="hero_panel">
+            <div class="image_frame">
+                <img
+                    id="img_id"
+                    src="{{ uploaded_image or '' }}"
+                    alt="Selected animal preview"
+                    class="{% if uploaded_image %}has_image{% endif %}"
+                >
+                <div class="placeholder" id="placeholder_id">
+                    <span>Preview</span>
+                </div>
+            </div>
+            <div class="accent_block"></div>
+        </section>
+
+        <section class="content_panel">
+            <p class="eyebrow">Animal Image Classification</p>
+
+            <p class="intro">
+                Upload an animal image and the deep learning model will identify whether it is a dog, horse,
+                elephant, butterfly, chicken, cat, cow, sheep, spider, or squirrel.
+            </p>
+
+            <div class="form_clf">
+                <form action="{{ url_for('animal') }}" method="post" enctype="multipart/form-data">
+                    <div class="image_clf">
+                        <label for="input_id">Choose animal image</label>
+                        <input type="file" id="input_id" name="image" accept="image/*" required>
+                        <button type="submit" id="btn_id">Classify</button>
+
+                        {% if prediction %}
+                            <div class="result_box">
+                                <h3 id="pred_head">Prediction: {{ prediction }}</h3>
+                                <p id="pred_pag">Confidence: {{ confidence }}%</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+            <div class="animal_list">
+                <span>Dog</span>
+                <span>Horse</span>
+                <span>Elephant</span>
+                <span>Butterfly</span>
+                <span>Chicken</span>
+                <span>Cat</span>
+                <span>Cow</span>
+                <span>Sheep</span>
+                <span>Spider</span>
+                <span>Squirrel</span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const imageInput = document.getElementById('input_id');
+        const imageShow = document.getElementById('img_id');
+        const placeholder = document.getElementById('placeholder_id');
+
+        if (imageShow.getAttribute('src')) {
+            placeholder.style.display = 'none';
+        }
+
+        imageInput.addEventListener('change', function () {
+            const file = imageInput.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            imageShow.src = URL.createObjectURL(file);
+            imageShow.classList.add('has_image');
+            placeholder.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

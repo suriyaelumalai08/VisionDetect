@@ -1,0 +1,247 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='face.css') }}"> 
+</head>
+<body>
+    
+    
+       <nav class="nav_bar">
+        <a  id="homeid" href="{{ url_for('home') }}">Home</a>
+        <a id="demoid" href="{{ url_for('vehical') }}">Vehical</a>
+        <a id="demoid" href="{{ url_for('face') }}">Face Recognition</a>
+        <a id="demoid" href="{{ url_for('vehical') }}">Vehical</a>
+    </nav>
+
+
+
+         <div class="form_clf">
+
+            <form action="/vehical" method="post" enctype="multipart/form-data">
+
+            <div class="image_clf">
+                
+                <input type="file" id="input_id" name="image" accept="image/*" required>
+
+                <button type="submit" id="btn_id">upload</button>
+
+                <img id="img_id" src="{{ uploaded_image or '' }}" alt="Not selected">
+
+                {% if prediction %}
+                    <h2 id="pred_head">Prediction: {{ prediction }}</h2>
+                    <p id="pred_pag">Confidence: {{ confidence }}%</p>
+                {% endif %}
+
+            </div>
+
+            </form>
+
+        </div>
+
+        
+
+
+        <div class="contant">
+            <h1 id="headtopic">Face Recognition Using Deep Learning</h1>
+
+            <div class="p_tag">
+
+                <p>Vehicle Image Classification is a Computer Vision task in Deep Learning where an AI model automatically identifies and classifies different types of vehicles from an image.</p>
+
+                <p>This project uses Deep Learning models, especially Convolutional Neural Networks (CNNs), to process and understand vehicle images with high accuracy.</p>
+
+            </div>
+
+
+        </div>
+
+
+        
+
+
+<script>
+
+    const image_input = document.getElementById('input_id');
+
+    const image_show = document.getElementById('img_id');
+
+    const button = document.getElementById('btn_id');
+
+
+    image_input.addEventListener('change',function(){
+
+        const file = image_input.files[0];
+
+        if (file){
+
+            const image_url = URL.createObjectURL(file);
+
+            console.log(image_url)
+
+            image_show.src = image_url
+
+            image_show.style.display = 'block'
+
+            image_show.style.width = '100px'
+        }
+
+        else{
+            alert('Please select an image file first!');
+        }
+
+    });
+
+
+</script>
+
+</body>
+
+
+</html>
+ -->
+
+
+
+
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static',filename='face.css')}}">
+
+</head>
+<body>
+
+    <nav class="nav_bar">
+        <a  id="homeid" href="{{ url_for('home') }}">Home</a>
+        <a id="demoid" href="{{ url_for('vehical') }}">Vehical</a>
+        <a id="demoid" href="{{ url_for('face') }}">Face Recognition</a>
+        <a id="demoid" href="{{ url_for('animal') }}">Animal</a>
+        <a id="demoid" href="{{ url_for('object_detection') }}">Object Detection</a>
+    </nav>
+
+    <div class="maincontainer">
+
+
+        <div id="container">
+            <video id="video" width="320" height="240" autoplay></video>
+            <canvas id="overlay" width="320" height="240"></canvas>
+        </div>
+
+        <br>
+
+        <!-- <button id="start">Start Camera</button>
+        <button id="stop">Stop Camera</button> -->
+
+        <div class="btn_container">
+            <button type="button" class="btn btn-success stbtn" id="start">Start</button>
+            <button type="button" class="btn btn-danger" id="stop">Stop</button>
+        </div>
+
+
+    </div>
+
+
+    <div class="maincontent">
+
+            <h1>AI-Based Face Detection System</h1>
+
+            <p>The Face Detection System is an Artificial Intelligence and Computer Vision application that automatically detects human faces from images, video streams, or real-time camera input. The system uses Machine Learning and Deep Learning algorithms to identify and locate faces accurately within a digital image.</p>
+
+        </div>
+
+
+<script>
+    let video = document.getElementById("video");
+let overlay = document.getElementById("overlay");
+let overlayContext = overlay.getContext("2d");
+
+let hiddenCanvas = document.createElement("canvas");
+hiddenCanvas.width = 320;
+hiddenCanvas.height = 240;
+let hiddenContext = hiddenCanvas.getContext("2d");
+
+let stream = null;
+let intervalId = null;
+
+document.getElementById("start").addEventListener("click", async function() {
+    stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+            width: 320,
+            height: 240
+        }
+    });
+
+    video.srcObject = stream;
+    video.play();
+
+    intervalId = setInterval(sendFrameToServer, 200);
+});
+
+document.getElementById("stop").addEventListener("click", function() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+
+    if (stream) {
+        stream.getTracks().forEach(function(track) {
+            track.stop();
+        });
+
+        video.srcObject = null;
+        stream = null;
+    }
+
+    overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+});
+
+function sendFrameToServer() {
+    if (!stream) {
+        return;
+    }
+
+    hiddenContext.drawImage(video, 0, 0, 320, 240);
+
+    let imageData = hiddenCanvas.toDataURL("image/jpeg");
+
+    fetch("/detect", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ image: imageData })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.boxes);
+        drawBoxes(data.boxes);
+    })
+    .catch(error => {
+        console.log("Detection error:", error);
+    });
+}
+
+function drawBoxes(boxes) {
+    overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+
+    console.log("Boxes received:", boxes);
+
+    boxes.forEach(function(box) {
+        overlayContext.strokeStyle = "lime";
+        overlayContext.lineWidth = 3;
+        overlayContext.strokeRect(box.x, box.y, box.w, box.h);
+
+        overlayContext.fillStyle = "lime";
+        overlayContext.font = "18px Arial";
+        overlayContext.fillText(box.name, box.x, box.y > 20 ? box.y - 8 : box.y + 20);
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='face.css')}}">
+</head>
+<body>
+    <div id="container">
+        <video id="video" width="640" height="480" autoplay></video>
+        <canvas id="overlay" width="640" height="480"></canvas>
+    </div>
+
+    <br>
+
+    <button id="start">Start Camera</button>
+    <button id="stop">Stop Camera</button>
+
+<script>
+let video = document.getElementById("video");
+let overlay = document.getElementById("overlay");
+let overlayContext = overlay.getContext("2d");
+
+let hiddenCanvas = document.createElement("canvas");
+hiddenCanvas.width = 640;
+hiddenCanvas.height = 480;
+let hiddenContext = hiddenCanvas.getContext("2d");
+
+let stream = null;
+let intervalId = null;
+
+document.getElementById("start").addEventListener("click", async function() {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    video.play();
+
+    intervalId = setInterval(sendFrameToServer, 200);
+});
+
+document.getElementById("stop").addEventListener("click", function() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+
+    if (stream) {
+        stream.getTracks().forEach(function(track) {
+            track.stop();
+        });
+
+        video.srcObject = null;
+        stream = null;
+    }
+
+    overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+});
+
+function sendFrameToServer() {
+    if (!stream) {
+        return;
+    }
+
+    hiddenContext.drawImage(video, 0, 0, 640, 480);
+
+    let imageData = hiddenCanvas.toDataURL("image/jpeg");
+
+    fetch("/detect", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ image: imageData })
+    })
+    .then(response => response.json())
+    .then(data => {
+        drawBoxes(data.boxes);
+    });
+}
+
+function drawBoxes(boxes) {
+    overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+
+    boxes.forEach(box => {
+        overlayContext.strokeStyle = "lime";
+        overlayContext.lineWidth = 3;
+        overlayContext.strokeRect(box.x, box.y, box.w, box.h);
+
+        overlayContext.fillStyle = "lime";
+        overlayContext.font = "18px Arial";
+        overlayContext.fillText(box.name, box.x, box.y - 8);
+    });
+}
+</script>
+</body>
+</html>

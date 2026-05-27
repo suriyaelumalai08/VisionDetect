@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Models</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Home.css') }}">
+
+</head>
+<body>
+
+    <nav class="nav_bar">
+
+        <a  id="homeid" href="{{ url_for('home') }}">Home</a>
+        <a id="demoid" href="{{ url_for('vehical') }}">Vehical</a>
+        <a id="demoid" href="{{ url_for('face') }}">Face Recognition</a>
+        <a id="demoid" href="{{ url_for('animal') }}">Animal</a>
+        <a id="demoid" href="{{ url_for('object_detection') }}">Object Detection</a>
+    
+    </nav>
+
+
+
+    
+ <div class="content">
+  <h2  id="MainHead">AI-Powered Machine Learning & Deep Learning Solutions</h2>
+
+    <!-- <h1 class="hover-underline">this is that underline</h1> -->
+
+    <p id="subcontent">Build smarter systems using advanced Machine Learning and Deep Learning models 
+        for prediction, classification, automation, analytics, and intelligent decision-making.</p>
+    </div>
+
+    <div class="img_dl">
+        <img id="img1" src="{{ url_for('static', filename='robot2_bg.png') }}" alt="Robot" title="Robot">
+
+    </div>
+
+
+
+
+</body>
+
+
+<script>
+
+const robot = document.getElementById("img1");
+
+document.addEventListener("mousemove", (e)=>{
+
+    let x = (window.innerWidth / 2 - e.pageX) / 40;
+
+    let y = (window.innerHeight / 2 - e.pageY) / 40;
+
+    robot.style.transform =
+    `
+    rotateY(${-x}deg)
+    rotateX(${y}deg)
+    translateY(-5px)
+    `;
+
+});
+
+
+
+
+</script>
+</html>

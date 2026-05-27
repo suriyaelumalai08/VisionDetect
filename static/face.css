@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --sand: #f1eadf;
+    --paper: #fffaf2;
+    --charcoal: #111111;
+    --ink: #2a221c;
+    --muted: #75695d;
+    --clay: #ac8e6f;
+    --clay-dark: #6f5238;
+    --black: #050505;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ink);
+    background:
+        linear-gradient(90deg, var(--black) 0 32%, transparent 32%),
+        var(--sand);
+    display: grid;
+    grid-template-columns: minmax(320px, 452px) 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 34px 58px;
+    align-items: center;
+    padding: 0 max(20px, calc((100vw - 1140px) / 2)) 56px;
+}
+
+.nav_bar {
+    grid-column: 1 / -1;
+    min-height: 64px;
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.16);
+    position: relative;
+    z-index: 3;
+}
+
+.nav_bar a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 0;
+    transition: color 0.2s;
+}
+
+.nav_bar a:hover {
+    color: var(--clay-dark);
+    text-decoration: none;
+}
+
+.maincontainer {
+    grid-column: 1;
+    grid-row: 2;
+    position: relative;
+    min-height: 540px;
+    padding-top: 18px;
+}
+
+.maincontainer::after {
+    content: "";
+    position: absolute;
+    width: min(454px, 92%);
+    height: 514px;
+    right: 0;
+    bottom: 0;
+    border: 18px solid var(--clay);
+    z-index: 1;
+}
+
+#container {
+    width: min(452px, 100%);
+    height: 503px;
+    position: relative;
+    z-index: 2;
+    background: #d8c5ae;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+#container::before {
+    content: "Camera Preview";
+    position: absolute;
+    inset: 24px;
+    display: grid;
+    place-items: center;
+    color: var(--paper);
+    border: 2px solid rgba(255, 250, 242, 0.84);
+    background: linear-gradient(rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.3));
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+#video,
+#overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(320px, calc(100% - 48px));
+    height: auto;
+    aspect-ratio: 4 / 3;
+    transform: translate(-50%, -50%);
+}
+
+#video {
+    z-index: 1;
+    background: #171717;
+}
+
+#overlay {
+    z-index: 2;
+    pointer-events: none;
+}
+
+.btn_container {
+    position: relative;
+    z-index: 2;
+    width: min(452px, 100%);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--paper);
+    border: 1px solid rgba(111, 82, 56, 0.2);
+    padding: 18px;
+    box-shadow: 0 24px 60px rgba(17, 17, 17, 0.13);
+}
+
+.btn_container .btn,
+#start,
+#stop {
+    min-width: 132px;
+    border: 2px solid var(--charcoal) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--charcoal) !important;
+    padding: 12px 24px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.btn_container .btn:hover,
+#start:hover,
+#stop:hover {
+    background: var(--charcoal) !important;
+    color: var(--paper) !important;
+    transform: translateY(-1px);
+}
+
+.maincontent {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.maincontent h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(58px, 7vw, 92px);
+    line-height: 0.95;
+    color: var(--charcoal);
+    margin-bottom: 22px;
+}
+
+.maincontent p {
+    max-width: 540px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+@media (max-width: 900px) {
+    body {
+        grid-template-columns: 1fr;
+        background: var(--sand);
+        padding: 0 20px 56px;
+    }
+
+    .nav_bar {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px 24px;
+    }
+
+    .maincontainer,
+    .maincontent {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .maincontainer {
+        min-height: auto;
+    }
+
+    .maincontainer::after {
+        display: none;
+    }
+
+    #container,
+    .btn_container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 560px) {
+    body {
+        padding: 0 12px 40px;
+    }
+
+    .nav_bar a {
+        font-size: 12px;
+    }
+
+    #container {
+        height: min(430px, 70vh);
+    }
+}

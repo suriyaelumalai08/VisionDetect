@@ -1,0 +1,185 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --sand: #f1eadf;
+    --paper: #fffaf2;
+    --charcoal: #111111;
+    --ink: #2a221c;
+    --muted: #75695d;
+    --clay: #ac8e6f;
+    --clay-dark: #6f5238;
+    --black: #050505;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ink);
+    background:
+        linear-gradient(90deg, var(--black) 0 32%, transparent 32%),
+        var(--sand);
+}
+
+.nav_bar {
+    width: min(1140px, calc(100% - 40px));
+    margin: 18px auto 0;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.16);
+    position: relative;
+    z-index: 3;
+}
+
+.nav_bar a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 0;
+    transition: color 0.2s;
+}
+
+.nav_bar a:hover {
+    color: var(--clay-dark);
+}
+
+.content {
+    width: min(1140px, calc(100% - 40px));
+    min-height: calc(100vh - 96px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 58px;
+    align-items: center;
+    padding: 34px 0 56px;
+}
+
+.content::before {
+    content: "";
+    width: min(452px, 100%);
+    height: 503px;
+    grid-column: 1;
+    grid-row: 1;
+    border: 18px solid var(--clay);
+    align-self: center;
+    justify-self: end;
+    transform: translate(34px, 34px);
+}
+
+#MainHead {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(5px, 7vw, 60px);
+    line-height: 0.95;
+    color: var(--charcoal);
+    max-width: 650px;
+}
+
+#subcontent {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    max-width: 520px;
+    margin-top: 280px;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.img_dl {
+    position: absolute;
+    left: max(24px, calc((100vw - 1140px) / 2));
+    top: 150px;
+    width: min(452px, calc(50vw - 70px));
+    height: 503px;
+    z-index: 2;
+    background: #d8c5ae;
+    overflow: hidden;
+}
+
+.img_dl::before {
+    content: "AI Models";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--paper);
+    background: linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.24));
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#img1 {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 34px;
+    background: #d8c5ae;
+    filter: sepia(0.2) saturate(0.9);
+    transition: transform 0.15s linear;
+}
+
+@media (max-width: 900px) {
+    body {
+        background: var(--sand);
+    }
+
+    .nav_bar {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px 24px;
+    }
+
+    .content {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        gap: 24px;
+    }
+
+    .content::before {
+        display: none;
+    }
+
+    #MainHead,
+    #subcontent {
+        grid-column: 1;
+        grid-row: auto;
+        margin-top: 0;
+    }
+
+    .img_dl {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: min(100%, 520px);
+        height: min(500px, 70vh);
+        margin: 20px auto 40px;
+    }
+}
+
+@media (max-width: 560px) {
+    .nav_bar,
+    .content {
+        width: min(100% - 24px, 1140px);
+    }
+
+    .nav_bar a {
+        font-size: 12px;
+    }
+}

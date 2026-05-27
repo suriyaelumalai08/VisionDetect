@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='object.css') }}">
+</head>
+<body>
+    <nav class="nav_bar">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('vehical') }}">Vehical</a>
+        <a href="{{ url_for('face') }}">Face Recognition</a>
+        <a href="{{ url_for('animal') }}">Animal</a>
+        <a href="{{ url_for('object_detection') }}">Object Detection</a>
+    </nav>
+
+    <main class="object_page">
+        <section class="hero_panel">
+            <div class="image_frame">
+                <img
+                    id="img_id"
+                    src="{{ detected_image or uploaded_image or '' }}"
+                    alt="Object detection preview"
+                    class="{% if detected_image or uploaded_image %}has_image{% endif %}"
+                >
+                <div class="placeholder" id="placeholder_id">
+                    <span>Preview</span>
+                </div>
+            </div>
+            <div class="accent_block"></div>
+        </section>
+
+        <section class="content_panel">
+            <p class="eyebrow">Object Detection</p>
+
+            <p class="intro">
+                Upload an image and the YOLOv8 model will detect objects, draw bounding boxes,
+                and show each object name with confidence.
+            </p>
+
+            <div class="form_clf">
+                <form action="{{ url_for('object_detection') }}" method="post" enctype="multipart/form-data">
+                    <div class="image_clf">
+                        <label for="input_id">Choose image</label>
+                        <input type="file" id="input_id" name="image" accept="image/*" required>
+                        <button type="submit" id="btn_id">Detect</button>
+
+                        {% if error %}
+                            <div class="result_box">
+                                <h3>Object detection unavailable</h3>
+                                <p>{{ error }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if detections %}
+                            <div class="result_box">
+                                <h3>Detected Objects</h3>
+                                {% for item in detections %}
+                                    <p>{{ item.name }} - {{ item.confidence }}%</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const imageInput = document.getElementById('input_id');
+        const imageShow = document.getElementById('img_id');
+        const placeholder = document.getElementById('placeholder_id');
+
+        if (imageShow.getAttribute('src')) {
+            placeholder.style.display = 'none';
+        }
+
+        imageInput.addEventListener('change', function () {
+            const file = imageInput.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            imageShow.src = URL.createObjectURL(file);
+            imageShow.classList.add('has_image');
+            placeholder.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
