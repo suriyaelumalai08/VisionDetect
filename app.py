@@ -1,19 +1,10 @@
 
-from tensorflow.keras.preprocessing.image import img_to_array, load_img
 from flask import Flask, render_template, url_for, request, jsonify
-from tensorflow.keras.models import load_model
 from werkzeug.utils import secure_filename
 import numpy as np
 import base64
 import cv2
 import os
-
-try:
-    from ultralytics import YOLO
-except ImportError:
-    YOLO = None
-
-
 
 
 app = Flask(__name__)
@@ -38,12 +29,32 @@ ANIMAL_CLASS_NAMES = [
     'Cat', 'Cow', 'Sheep', 'Spider', 'Squirrel'
 ]
 
-vehicle_model = load_model(VEHICLE_MODEL_PATH)
-animal_model = load_model(ANIMAL_MODEL_PATH)
+vehicle_model = None
+animal_model = None
 object_model = None
 
 
+def get_classifier_model(model_name):
+    global vehicle_model, animal_model
+
+    from tensorflow.keras.models import load_model
+
+    if model_name == "vehicle":
+        if vehicle_model is None:
+            vehicle_model = load_model(VEHICLE_MODEL_PATH)
+        return vehicle_model
+
+    if model_name == "animal":
+        if animal_model is None:
+            animal_model = load_model(ANIMAL_MODEL_PATH)
+        return animal_model
+
+    return None
+
+
 def prepare_image(image_path):
+    from tensorflow.keras.preprocessing.image import img_to_array, load_img
+
     img = load_img(image_path, target_size=IMAGE_SIZE)
     img_array = img_to_array(img)
     img_array = img_array / 255.0
@@ -76,7 +87,9 @@ def predict_uploaded_image(uploaded_file, model, class_names, prefix):
 def get_object_model():
     global object_model
 
-    if YOLO is None:
+    try:
+        from ultralytics import YOLO
+    except ImportError:
         return None
 
     if object_model is None:
@@ -86,9 +99,6 @@ def get_object_model():
 
 
 def detect_uploaded_objects(uploaded_file):
-    if YOLO is None:
-        return None, None, [], "Please install ultralytics to use YOLO object detection."
-
     if not uploaded_file or uploaded_file.filename == '':
         return None, None, [], None
 
@@ -145,7 +155,7 @@ def vehical():
 
         prediction, confidence, uploaded_image = predict_uploaded_image(
             uploaded_file,
-            vehicle_model,
+            get_classifier_model("vehicle"),
             VEHICLE_CLASS_NAMES,
             'vehicle'
         )
@@ -247,7 +257,7 @@ def animal():
 
         prediction, confidence, uploaded_image = predict_uploaded_image(
             uploaded_file,
-            animal_model,
+            get_classifier_model("animal"),
             ANIMAL_CLASS_NAMES,
             'animal'
         )
